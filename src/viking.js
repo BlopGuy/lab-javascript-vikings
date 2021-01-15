@@ -69,36 +69,44 @@ class War {
         this.saxonArmy.push(newSaxon);
     }
 
-    vikingAttack() {
+    executeAttack(soldierType) {
         let rndmSaxon = this.saxonArmy[Number(Math.floor(Math.random() * this.saxonArmy.length))];
         let rndmViking = this.vikingArmy[Number(Math.floor(Math.random() * this.vikingArmy.length))];
 
-        let saxonIndex = this.saxonArmy.indexOf(rndmSaxon);
+        let battleResult = "";
 
-        let battleResult = rndmSaxon.receiveDamage(rndmViking.strength);
-        if(battleResult === `A Saxon has died in combat`) {
-            this.saxonArmy.splice(saxonIndex, 1);
+        
+        if (soldierType === "viking") {
+            let soldierIndex = this.vikingArmy.indexOf(rndmViking);
+            battleResult = rndmSaxon.receiveDamage(rndmViking.strength);
+
+            if (battleResult === `A Saxon has died in combat`) {
+                this.saxonArmy.splice(soldierIndex, 1);
+            }
+
+        } else {
+            let soldierIndex = this.saxonArmy.indexOf(rndmSaxon);
+            battleResult = rndmViking.receiveDamage(rndmSaxon.strength);
+
+            if (battleResult === `${rndmViking.name} has died in act of combat`) {
+                this.vikingArmy.splice(soldierIndex, 1);
+            }
+    
         }
 
         return battleResult;
+    }
+
+    vikingAttack() {
+        return this.executeAttack("viking");
     }
     saxonAttack() {
-        let rndmSaxon = this.saxonArmy[Number(Math.floor(Math.random() * this.saxonArmy.length))];
-        let rndmViking = this.vikingArmy[Number(Math.floor(Math.random() * this.vikingArmy.length))];
-
-        let vikingIndex = this.vikingArmy.indexOf(rndmViking);
-        let battleResult = rndmViking.receiveDamage(rndmSaxon.strength);
-        if(battleResult === `${rndmViking.name} has died in act of combat`) {
-            this.vikingArmy.splice(vikingIndex, 1);
-        }
-
-        return battleResult;
- 
+        return this.executeAttack("saxton");
     }
     showStatus() {
-        if(this.vikingArmy.length === 0) {
+        if (this.vikingArmy.length === 0) {
             return "Saxons have fought for their lives and survived another day...";
-        } else if(this.saxonArmy.length === 0) {
+        } else if (this.saxonArmy.length === 0) {
             return "Vikings have won the war of the century!";
         } else {
             return "Vikings and Saxons are still in the thick of battle.";
